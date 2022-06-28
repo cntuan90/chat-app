@@ -1,0 +1,29 @@
+name: Git page deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install and build FE
+        run: cd public && npm install && npm run build && cd ..
+
+      - name: Install and build BE
+        run: cd server && npm install && npm run build && cd ..
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: build
